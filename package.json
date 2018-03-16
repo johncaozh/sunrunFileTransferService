@@ -1,0 +1,23 @@
+{
+  "name": "sunrunfiletransferservice",
+  "version": "0.0.1",
+  "description": "上传下载文件到S3的服务",
+  "private": true,
+  "main": "app.js",
+  "author": "johncao",
+  "license": "ISC",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.210.0",
+    "body-parser": "~1.17.1",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.3",
+    "ejs": "~2.5.6",
+    "express": "~4.15.2",
+    "morgan": "~1.8.1",
+    "node-zookeeper-client": "^0.2.2",
+    "serve-favicon": "~2.4.2"
+  }
+}
