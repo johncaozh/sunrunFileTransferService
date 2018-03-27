@@ -12,9 +12,11 @@ COPY ./package.json /usr/src/service/
 RUN npm install --registry=https://registry.npm.taobao.org
 COPY . /usr/src/service
 
-ENV NODE_ENV dev
+# ENV NODE_ENV dev
 
-RUN ["chmod", "+x", "/usr/src/service/docker_start.sh"]
-CMD /bin/bash /usr/src/service/docker_start.sh $NODE_ENV
+# RUN ["chmod", "+x", "/usr/src/service/docker_start.sh"]
+# CMD /bin/bash /usr/src/service/docker_start.sh $NODE_ENV
 
 EXPOSE 3000
+
+CMD npm start
