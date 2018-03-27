@@ -1,7 +1,8 @@
 From node:8.9.3
 
 #Install global pm2
-Run npm install pm2 -g --registry=https://registry.npm.taobao.org
+RUN npm install -g cnpm --registry=https://registry.npm.taobao.org
+Run cnpm install pm2 -g
 
 #Create app directory
 RUN mkdir -p /usr/src/service
@@ -9,7 +10,7 @@ WORKDIR /usr/src/service
 
 #Install app dependencies
 COPY package.json /usr/src/service/
-RUN npm install --registry=https://registry.npm.taobao.org
+RUN cnpm install
 COPY . /usr/src/service
 
 # ENV NODE_ENV dev
