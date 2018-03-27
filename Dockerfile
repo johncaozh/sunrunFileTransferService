@@ -8,7 +8,7 @@ RUN mkdir -p /usr/src/service
 WORKDIR /usr/src/service
 
 #Install app dependencies
-COPY ./package.json /usr/src/service/
+COPY package.json /usr/src/service/
 RUN npm install --registry=https://registry.npm.taobao.org
 COPY . /usr/src/service
 
@@ -19,4 +19,4 @@ COPY . /usr/src/service
 
 EXPOSE 3000
 
-CMD npm start
+CMD node app.js
