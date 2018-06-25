@@ -30,7 +30,7 @@ app.use(bodyParser.urlencoded({
   limit: '1000mb'
 }));
 
-app.use('/', router_file);
+app.use('/api/v1', router_file);
 
 //生成特定格式的响应
 app.use(function (req, res, next) {
