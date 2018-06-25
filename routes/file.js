@@ -1,10 +1,8 @@
 var express = require("express");
 var multer = require("multer");
 var api = require("../utilities/api");
-var env = require("../utilities/env");
 var fs = require('fs');
 var path = require('path');
-var uuid = require('uuid');
 var s3 = require("../utilities/s3.js");
 var router = express.Router();
 const fileDir = path.resolve("files");
@@ -21,19 +19,26 @@ router.post("/files", upload, function (req, res, next) {
       api.attachData2Response(500, "上传失败", err, res);
       next();
     } else {
-      var data = {
-        size: req.file.size,
-      };
-      data.serverId = await s3.getFileMd5(req.file.path);
-      var existed = await s3.checkObjectExist(data.serverId);
-      if (!existed) {
-        await s3.uploadObject(req.file.path, data.serverId, mimeType || req.file.mimetype);
-      }
+      try {
+        var data = {
+          size: req.file.size,
+        };
+        data.serverId = await s3.getFileMd5(req.file.path);
+        var existed = await s3.checkObjectExist(data.serverId);
+        if (!existed) {
+          await s3.uploadObject(req.file.path, data.serverId, mimeType || req.file.mimetype);
+          await s3.putObjectACL(data.serverId);
+        }
 
-      data.link = s3.getLink(data.serverId);
-      fs.unlinkSync(req.file.path);
-      api.attachData2Response(200, "上传成功", data, res);
-      next();
+        data.link = s3.getLink(data.serverId);
+        api.attachData2Response(200, "上传成功", data, res);
+        next();
+      } catch (err) {
+        api.attachData2Response(500, "上传失败：" + err.message, null, res);
+        next();
+      } finally {
+        fs.unlinkSync(req.file.path);
+      }
     }
   });
 });

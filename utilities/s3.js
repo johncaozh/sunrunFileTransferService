@@ -55,6 +55,7 @@ async function uploadObject(filePath, objectKey, mimeType) {
         Bucket: env.s3Config.bucketName,
         Key: objectKey,
         Body: new Buffer(fileData),
+
     };
 
     if (mimeType)
@@ -100,7 +101,17 @@ async function getFileMd5(filePath) {
 }
 
 function getLink(serverId) {
-    return `${config.endpoint.startWith('http://')?'':"http://"}${config.endpoint}/${config.bucketName}/${serverId}`
+    return `${config.endpoint.startsWith('http://')?'':"http://"}${config.endpoint}/${config.bucketName}/${serverId}`
+}
+
+async function putObjectACL(serverId) {
+    var request = {
+        Bucket: env.s3Config.bucketName,
+        Key: serverId,
+        ACL: 'public-read',
+    };
+
+    return await s3Client.putObjectAcl(request).promise();
 }
 
 module.exports = {
@@ -111,5 +122,6 @@ module.exports = {
     checkObjectExist,
     getFileMd5,
     refreshS3ClientConfig,
-    getLink
+    getLink,
+    putObjectACL
 }
