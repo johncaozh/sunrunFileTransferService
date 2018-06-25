@@ -9,7 +9,7 @@ const s3Config = {
 }
 
 const zeekeeperConfig = {
-    host: '10.21.1.150:2181,10.21.1.150:2182,10.21.1.150:2183',
+    host: '10.254.50.27:2181',
     s3_endpont: '/custom/s3/endpoint',
     s3_accessKey: '/custom/s3/accesskey',
     s3_secretKey: '/custom/s3/secretKey',

@@ -15,14 +15,6 @@ var upload = multer({
 // 单文件上传
 router.post("/files", upload, function (req, res, next) {
   var mimeType = req.query.mimeType;
-  var withPresignedUrl = req.query.withPresignedUrl === "true" || req.query.withPresignedUrl === "True";
-  var expires = Number(req.query.expires);
-  
-  if (expires < 0 || expires > 7 * 24 * 60 * 60) {
-    api.attachData2Response(400, "expires不合法", null, res);
-    next();
-    return;
-  }
 
   upload(req, res, async function (err) {
     if (err) {
@@ -30,17 +22,15 @@ router.post("/files", upload, function (req, res, next) {
       next();
     } else {
       var data = {
-        size: req.file.size, 
+        size: req.file.size,
       };
-      data.md5 = await s3.getFileMd5(req.file.path);
-      var existed = await s3.checkObjectExist(data.md5);
+      data.serverId = await s3.getFileMd5(req.file.path);
+      var existed = await s3.checkObjectExist(data.serverId);
       if (!existed) {
-        await s3.uploadObject(req.file.path, data.md5, mimeType || req.file.mimetype);
-      }
-      if (withPresignedUrl) {
-        data.presignedUrl = await s3.getObjectPresignedUrl(data.md5, expires);
+        await s3.uploadObject(req.file.path, data.serverId, mimeType || req.file.mimetype);
       }
 
+      data.link = s3.getLink(data.serverId);
       fs.unlinkSync(req.file.path);
       api.attachData2Response(200, "上传成功", data, res);
       next();
@@ -53,7 +43,6 @@ router.get("/files/:fileId", api.catchAsyncErrors(async function (req, res, next
   var fileName = req.query.fileName;
   var existed = await s3.checkObjectExist(fileId);
   if (existed) {
-    var localPath = path.resolve(fileDir, uuid.v4());
     var stream = await s3.getObjectStream(fileId);
     res.attachment(fileName || fileId);
     stream.pipe(res);

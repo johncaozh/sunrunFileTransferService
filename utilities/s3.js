@@ -99,6 +99,10 @@ async function getFileMd5(filePath) {
     return md5.toUpperCase();
 }
 
+function getLink(serverId) {
+    return `${config.endpoint.startWith('http://')?'':"http://"}${config.endpoint}/${config.bucketName}/${serverId}`
+}
+
 module.exports = {
     init,
     uploadObject,
@@ -106,4 +110,6 @@ module.exports = {
     getObjectPresignedUrl,
     checkObjectExist,
     getFileMd5,
+    refreshS3ClientConfig,
+    getLink
 }
